@@ -1,0 +1,19 @@
+name: Remote Lock Control
+on:
+  repository_dispatch:
+    types: [lock_control]
+jobs:
+  update-status:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Update status.txt
+        run: echo "${{ github.event.client_payload.state }}" > status.txt
+      - name: Commit changes
+        run: |
+          git config user.name "RemoteBot"
+          git config user.email "bot@github.com"
+          git add status.txt
+          git commit -m "Remote Status Update"
+          git push
+
